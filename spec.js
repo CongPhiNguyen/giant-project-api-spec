@@ -24,6 +24,10 @@ var spec = {
       name: "album",
       description: "Các API về album",
     },
+    {
+      name: "search",
+      description: "Các API về tìm kiếm",
+    },
   ],
   schemes: ["http"],
   paths: {
@@ -1013,8 +1017,8 @@ var spec = {
         security: [],
       },
     },
-    // Các api về images và albums
-    "/upload": {
+    // Các api về images
+    "image/upload": {
       post: {
         tags: ["image"],
         summary: "Tải hình ảnh và thông tin hình ảnh lên server",
@@ -1135,7 +1139,7 @@ var spec = {
         security: [],
       },
     },
-    "/:id": {
+    "image/:id": {
       get: {
         tags: ["image"],
         summary: "Lấy thông tin hình ảnh bằng id của hình ảnh",
@@ -1241,7 +1245,7 @@ var spec = {
         security: [],
       },
     },
-    "/get-user-own-image-key": {
+    "image/get-user-own-image-key": {
       get: {
         tags: ["image"],
         summary: "Lấy thông tin image key sở hữu từ người dùng",
@@ -1323,7 +1327,7 @@ var spec = {
         security: [],
       },
     },
-    "/get-user-shared-image-key": {
+    "image/get-user-shared-image-key": {
       get: {
         tags: ["image"],
         summary: "Lấy thông tin image key được chia sẻ từ người dùng",
@@ -1405,7 +1409,7 @@ var spec = {
         security: [],
       },
     },
-    "/add-user-to-viewed": {
+    "image/add-user-to-viewed": {
       patch: {
         tags: ["image"],
         summary: "Thêm người dùng vào danh sách đã xem hình ảnh",
@@ -1499,8 +1503,8 @@ var spec = {
         security: [],
       },
     },
-    "/delete-own-image-temp": {
-      delete: {
+    "image/delete-own-image-temp": {
+      patch: {
         tags: ["image"],
         summary: "Xóa hình ảnh sở hữu (tạm thời)",
         description: "",
@@ -1602,7 +1606,7 @@ var spec = {
         security: [],
       },
     },
-    "/delete-own-image-perm": {
+    "image/delete-own-image-perm": {
       delete: {
         tags: ["image"],
         summary: "Xóa hình ảnh sở hữu (hoàn toàn)",
@@ -1705,6 +1709,2552 @@ var spec = {
         security: [],
       },
     },
+    "image/delete-received-image-temp": {
+      patch: {
+        tags: ["image"],
+        summary: "Xóa hình ảnh được nhận (tạm thời)",
+        description: "",
+        operationId: "deleteReceivedImageTemp",
+        consumes: ["multipart/form-data"],
+        produces: ["application/json"],
+        parameters: [
+          {
+            in: "formData",
+            name: "id",
+            required: "true",
+            schema: {
+              type: "string",
+            },
+            description: "id của hình ảnh",
+          },
+          {
+            in: "formData",
+            name: "username",
+            required: "true",
+            schema: {
+              type: "string",
+            },
+            description: "username của người dùng",
+          },
+          {
+            in: "formData",
+            name: "imageOwnKey",
+            required: "true",
+            schema: {
+              type: "string",
+            },
+            description: "Key sở hữu hình ảnh của người dùng",
+          },
+          {
+            in: "formData",
+            name: "token",
+            schema: {
+              type: "string",
+            },
+            description: "JWT của người dùng",
+          },
+        ],
+        responses: {
+          200: {
+            description: "status: 200 OK",
+            schema: {
+              properties: {
+                message: {
+                  type: "string",
+                  default: "Delete temporary image OK",
+                },
+                error: { type: "string", default: "false" },
+                success: { type: "boolean", default: "true" },
+              },
+            },
+          },
+
+          401: {
+            description: "status: 401 Unauthorize token",
+            schema: {
+              properties: {
+                message: {
+                  type: "string",
+                  default: "Token is not correct or expired",
+                },
+                error: { type: "string" },
+                success: { type: "boolean", default: "false" },
+              },
+            },
+          },
+          404: {
+            description: "status: 404 Not found",
+            schema: {
+              properties: {
+                message: {
+                  type: "string",
+                  default: "Username or image not found",
+                },
+                error: { type: "string" },
+                success: { type: "boolean", default: "false" },
+              },
+            },
+          },
+          500: {
+            description: "status: 500 Not implemented",
+            schema: {
+              properties: {
+                message: {
+                  type: "string",
+                  default: "Can't delete image",
+                },
+                error: { type: "string" },
+                success: { type: "boolean", default: "false" },
+              },
+            },
+          },
+        },
+        security: [],
+      },
+    },
+    "image/delete-received-image-perm": {
+      delete: {
+        tags: ["image"],
+        summary: "Xóa hình ảnh được nhận (vĩnh viễn)",
+        description: "",
+        operationId: "deleteReceivedImagePerm",
+        consumes: ["multipart/form-data"],
+        produces: ["application/json"],
+        parameters: [
+          {
+            in: "formData",
+            name: "id",
+            required: "true",
+            schema: {
+              type: "string",
+            },
+            description: "id của hình ảnh",
+          },
+          {
+            in: "formData",
+            name: "username",
+            required: "true",
+            schema: {
+              type: "string",
+            },
+            description: "username của người dùng",
+          },
+          {
+            in: "formData",
+            name: "imageOwnKey",
+            required: "true",
+            schema: {
+              type: "string",
+            },
+            description: "Key sở hữu hình ảnh của người dùng",
+          },
+          {
+            in: "formData",
+            name: "token",
+            schema: {
+              type: "string",
+            },
+            description: "JWT của người dùng",
+          },
+        ],
+        responses: {
+          200: {
+            description: "status: 200 OK",
+            schema: {
+              properties: {
+                message: {
+                  type: "string",
+                  default: "Delete temporary image OK",
+                },
+                error: { type: "string", default: "false" },
+                success: { type: "boolean", default: "true" },
+              },
+            },
+          },
+
+          401: {
+            description: "status: 401 Unauthorize token",
+            schema: {
+              properties: {
+                message: {
+                  type: "string",
+                  default: "Token is not correct or expired",
+                },
+                error: { type: "string" },
+                success: { type: "boolean", default: "false" },
+              },
+            },
+          },
+          404: {
+            description: "status: 404 Not found",
+            schema: {
+              properties: {
+                message: {
+                  type: "string",
+                  default: "Username or image not found",
+                },
+                error: { type: "string" },
+                success: { type: "boolean", default: "false" },
+              },
+            },
+          },
+          500: {
+            description: "status: 500 Not implemented",
+            schema: {
+              properties: {
+                message: {
+                  type: "string",
+                  default: "Can't delete image",
+                },
+                error: { type: "string" },
+                success: { type: "boolean", default: "false" },
+              },
+            },
+          },
+        },
+        security: [],
+      },
+    },
+    "image/recover-own-image": {
+      patch: {
+        tags: ["image"],
+        summary: "Khôi phục hình ảnh của bản thân",
+        description: "",
+        operationId: "recoverOwnImage",
+        consumes: ["multipart/form-data"],
+        produces: ["application/json"],
+        parameters: [
+          {
+            in: "formData",
+            name: "id",
+            required: "true",
+            schema: {
+              type: "string",
+            },
+            description: "id của hình ảnh",
+          },
+          {
+            in: "formData",
+            name: "username",
+            required: "true",
+            schema: {
+              type: "string",
+            },
+            description: "username của người dùng",
+          },
+          {
+            in: "formData",
+            name: "imageOwnKey",
+            required: "true",
+            schema: {
+              type: "string",
+            },
+            description: "Key sở hữu hình ảnh của người dùng",
+          },
+          {
+            in: "formData",
+            name: "token",
+            schema: {
+              type: "string",
+            },
+            description: "JWT của người dùng",
+          },
+        ],
+        responses: {
+          200: {
+            description: "status: 200 OK",
+            schema: {
+              properties: {
+                message: {
+                  type: "string",
+                  default: "Delete temporary image OK",
+                },
+                error: { type: "string", default: "false" },
+                success: { type: "boolean", default: "true" },
+              },
+            },
+          },
+
+          401: {
+            description: "status: 401 Unauthorize token",
+            schema: {
+              properties: {
+                message: {
+                  type: "string",
+                  default: "Token is not correct or expired",
+                },
+                error: { type: "string" },
+                success: { type: "boolean", default: "false" },
+              },
+            },
+          },
+          404: {
+            description: "status: 404 Not found",
+            schema: {
+              properties: {
+                message: {
+                  type: "string",
+                  default: "Username or image not found",
+                },
+                error: { type: "string" },
+                success: { type: "boolean", default: "false" },
+              },
+            },
+          },
+          500: {
+            description: "status: 500 Not implemented",
+            schema: {
+              properties: {
+                message: {
+                  type: "string",
+                  default: "Can't delete image",
+                },
+                error: { type: "string" },
+                success: { type: "boolean", default: "false" },
+              },
+            },
+          },
+        },
+        security: [],
+      },
+    },
+    "image/recover-received-image": {
+      patch: {
+        tags: ["image"],
+        summary: "Khôi phục hình ảnh được chia sẻ",
+        description: "",
+        operationId: "recoverReceivedImage",
+        consumes: ["multipart/form-data"],
+        produces: ["application/json"],
+        parameters: [
+          {
+            in: "formData",
+            name: "id",
+            required: "true",
+            schema: {
+              type: "string",
+            },
+            description: "id của hình ảnh",
+          },
+          {
+            in: "formData",
+            name: "username",
+            required: "true",
+            schema: {
+              type: "string",
+            },
+            description: "username của người dùng",
+          },
+          {
+            in: "formData",
+            name: "imageOwnKey",
+            required: "true",
+            schema: {
+              type: "string",
+            },
+            description: "Key sở hữu hình ảnh của người dùng",
+          },
+          {
+            in: "formData",
+            name: "token",
+            schema: {
+              type: "string",
+            },
+            description: "JWT của người dùng",
+          },
+        ],
+        responses: {
+          200: {
+            description: "status: 200 OK",
+            schema: {
+              properties: {
+                message: {
+                  type: "string",
+                  default: "Delete temporary image OK",
+                },
+                error: { type: "string", default: "false" },
+                success: { type: "boolean", default: "true" },
+              },
+            },
+          },
+
+          401: {
+            description: "status: 401 Unauthorize token",
+            schema: {
+              properties: {
+                message: {
+                  type: "string",
+                  default: "Token is not correct or expired",
+                },
+                error: { type: "string" },
+                success: { type: "boolean", default: "false" },
+              },
+            },
+          },
+          404: {
+            description: "status: 404 Not found",
+            schema: {
+              properties: {
+                message: {
+                  type: "string",
+                  default: "Username or image not found",
+                },
+                error: { type: "string" },
+                success: { type: "boolean", default: "false" },
+              },
+            },
+          },
+          500: {
+            description: "status: 500 Not implemented",
+            schema: {
+              properties: {
+                message: {
+                  type: "string",
+                  default: "Can't delete image",
+                },
+                error: { type: "string" },
+                success: { type: "boolean", default: "false" },
+              },
+            },
+          },
+        },
+        security: [],
+      },
+    },
+    "image/change-title": {
+      patch: {
+        tags: ["image"],
+        summary: "Thay đổi tên của hình ảnh",
+        description: "",
+        operationId: "changeImageTitle",
+        consumes: ["multipart/form-data"],
+        produces: ["application/json"],
+        parameters: [
+          {
+            in: "formData",
+            name: "id",
+            required: "true",
+            schema: {
+              type: "string",
+            },
+            description: "id của hình ảnh",
+          },
+          {
+            in: "formData",
+            name: "username",
+            required: "true",
+            schema: {
+              type: "string",
+            },
+            description: "username của người dùng",
+          },
+          {
+            in: "formData",
+            name: "imageOwnKey",
+            required: "true",
+            schema: {
+              type: "string",
+            },
+            description: "Key sở hữu hình ảnh của người dùng",
+          },
+          {
+            in: "formData",
+            name: "token",
+            schema: {
+              type: "string",
+            },
+            description: "JWT của người dùng",
+          },
+        ],
+        responses: {
+          200: {
+            description: "status: 200 OK",
+            schema: {
+              properties: {
+                message: {
+                  type: "string",
+                  default: "Delete temporary image OK",
+                },
+                error: { type: "string", default: "false" },
+                success: { type: "boolean", default: "true" },
+              },
+            },
+          },
+
+          401: {
+            description: "status: 401 Unauthorize token",
+            schema: {
+              properties: {
+                message: {
+                  type: "string",
+                  default: "Token is not correct or expired",
+                },
+                error: { type: "string" },
+                success: { type: "boolean", default: "false" },
+              },
+            },
+          },
+          404: {
+            description: "status: 404 Not found",
+            schema: {
+              properties: {
+                message: {
+                  type: "string",
+                  default: "Username or image not found",
+                },
+                error: { type: "string" },
+                success: { type: "boolean", default: "false" },
+              },
+            },
+          },
+          500: {
+            description: "status: 500 Not implemented",
+            schema: {
+              properties: {
+                message: {
+                  type: "string",
+                  default: "Can't delete image",
+                },
+                error: { type: "string" },
+                success: { type: "boolean", default: "false" },
+              },
+            },
+          },
+        },
+        security: [],
+      },
+    },
+    "image/change-description": {
+      patch: {
+        tags: ["image"],
+        summary: "Thay đổi mô tả của hình ảnh",
+        description: "",
+        operationId: "changeImageDescription",
+        consumes: ["multipart/form-data"],
+        produces: ["application/json"],
+        parameters: [
+          {
+            in: "formData",
+            name: "id",
+            required: "true",
+            schema: {
+              type: "string",
+            },
+            description: "id của hình ảnh",
+          },
+          {
+            in: "formData",
+            name: "username",
+            required: "true",
+            schema: {
+              type: "string",
+            },
+            description: "username của người dùng",
+          },
+          {
+            in: "formData",
+            name: "imageOwnKey",
+            required: "true",
+            schema: {
+              type: "string",
+            },
+            description: "Key sở hữu hình ảnh của người dùng",
+          },
+          {
+            in: "formData",
+            name: "token",
+            schema: {
+              type: "string",
+            },
+            description: "JWT của người dùng",
+          },
+        ],
+        responses: {
+          200: {
+            description: "status: 200 OK",
+            schema: {
+              properties: {
+                message: {
+                  type: "string",
+                  default: "Delete temporary image OK",
+                },
+                error: { type: "string", default: "false" },
+                success: { type: "boolean", default: "true" },
+              },
+            },
+          },
+
+          401: {
+            description: "status: 401 Unauthorize token",
+            schema: {
+              properties: {
+                message: {
+                  type: "string",
+                  default: "Token is not correct or expired",
+                },
+                error: { type: "string" },
+                success: { type: "boolean", default: "false" },
+              },
+            },
+          },
+          404: {
+            description: "status: 404 Not found",
+            schema: {
+              properties: {
+                message: {
+                  type: "string",
+                  default: "Username or image not found",
+                },
+                error: { type: "string" },
+                success: { type: "boolean", default: "false" },
+              },
+            },
+          },
+          500: {
+            description: "status: 500 Not implemented",
+            schema: {
+              properties: {
+                message: {
+                  type: "string",
+                  default: "Can't delete image",
+                },
+                error: { type: "string" },
+                success: { type: "boolean", default: "false" },
+              },
+            },
+          },
+        },
+        security: [],
+      },
+    },
+    "image/add-user-access": {
+      patch: {
+        tags: ["image"],
+        summary: "Thêm quyền truy cập của hình ảnh",
+        description: "",
+        operationId: "addUserAccess",
+        consumes: ["multipart/form-data"],
+        produces: ["application/json"],
+        parameters: [
+          {
+            in: "formData",
+            name: "id",
+            required: "true",
+            schema: {
+              type: "string",
+            },
+            description: "id của hình ảnh",
+          },
+          {
+            in: "formData",
+            name: "username",
+            required: "true",
+            schema: {
+              type: "string",
+            },
+            description: "username của người dùng",
+          },
+          {
+            in: "formData",
+            name: "imageOwnKey",
+            required: "true",
+            schema: {
+              type: "string",
+            },
+            description: "Key sở hữu hình ảnh của người dùng",
+          },
+          {
+            in: "formData",
+            name: "token",
+            schema: {
+              type: "string",
+            },
+            description: "JWT của người dùng",
+          },
+        ],
+        responses: {
+          200: {
+            description: "status: 200 OK",
+            schema: {
+              properties: {
+                message: {
+                  type: "string",
+                  default: "Delete temporary image OK",
+                },
+                error: { type: "string", default: "false" },
+                success: { type: "boolean", default: "true" },
+              },
+            },
+          },
+
+          401: {
+            description: "status: 401 Unauthorize token",
+            schema: {
+              properties: {
+                message: {
+                  type: "string",
+                  default: "Token is not correct or expired",
+                },
+                error: { type: "string" },
+                success: { type: "boolean", default: "false" },
+              },
+            },
+          },
+          404: {
+            description: "status: 404 Not found",
+            schema: {
+              properties: {
+                message: {
+                  type: "string",
+                  default: "Username or image not found",
+                },
+                error: { type: "string" },
+                success: { type: "boolean", default: "false" },
+              },
+            },
+          },
+          500: {
+            description: "status: 500 Not implemented",
+            schema: {
+              properties: {
+                message: {
+                  type: "string",
+                  default: "Can't delete image",
+                },
+                error: { type: "string" },
+                success: { type: "boolean", default: "false" },
+              },
+            },
+          },
+        },
+        security: [],
+      },
+    },
+    "image/remove-user-access": {
+      patch: {
+        tags: ["image"],
+        summary: "Xóa quyền truy cập của hình ảnh",
+        description: "",
+        operationId: "removeUserAccess",
+        consumes: ["multipart/form-data"],
+        produces: ["application/json"],
+        parameters: [
+          {
+            in: "formData",
+            name: "id",
+            required: "true",
+            schema: {
+              type: "string",
+            },
+            description: "id của hình ảnh",
+          },
+          {
+            in: "formData",
+            name: "username",
+            required: "true",
+            schema: {
+              type: "string",
+            },
+            description: "username của người dùng",
+          },
+          {
+            in: "formData",
+            name: "imageOwnKey",
+            required: "true",
+            schema: {
+              type: "string",
+            },
+            description: "Key sở hữu hình ảnh của người dùng",
+          },
+          {
+            in: "formData",
+            name: "token",
+            schema: {
+              type: "string",
+            },
+            description: "JWT của người dùng",
+          },
+        ],
+        responses: {
+          200: {
+            description: "status: 200 OK",
+            schema: {
+              properties: {
+                message: {
+                  type: "string",
+                  default: "Delete temporary image OK",
+                },
+                error: { type: "string", default: "false" },
+                success: { type: "boolean", default: "true" },
+              },
+            },
+          },
+
+          401: {
+            description: "status: 401 Unauthorize token",
+            schema: {
+              properties: {
+                message: {
+                  type: "string",
+                  default: "Token is not correct or expired",
+                },
+                error: { type: "string" },
+                success: { type: "boolean", default: "false" },
+              },
+            },
+          },
+          404: {
+            description: "status: 404 Not found",
+            schema: {
+              properties: {
+                message: {
+                  type: "string",
+                  default: "Username or image not found",
+                },
+                error: { type: "string" },
+                success: { type: "boolean", default: "false" },
+              },
+            },
+          },
+          500: {
+            description: "status: 500 Not implemented",
+            schema: {
+              properties: {
+                message: {
+                  type: "string",
+                  default: "Can't delete image",
+                },
+                error: { type: "string" },
+                success: { type: "boolean", default: "false" },
+              },
+            },
+          },
+        },
+        security: [],
+      },
+    },
+    // Các api về album
+    "album/create": {
+      post: {
+        tags: ["album"],
+        summary: "Tạo mới một album",
+        description: "",
+        operationId: "createAlbum",
+        consumes: ["multipart/form-data"],
+        produces: ["application/json"],
+        parameters: [
+          {
+            in: "formData",
+            name: "username",
+            required: "true",
+            schema: {
+              type: "string",
+            },
+            description: "username của người dùng",
+          },
+          {
+            in: "formData",
+            name: "token",
+            required: "true",
+            schema: {
+              type: "string",
+            },
+            description: "Token JWT của người dùng",
+          },
+          {
+            in: "formData",
+            name: "image",
+            required: "true",
+            type: "file",
+            description: "file hình ảnh",
+          },
+          {
+            in: "formData",
+            name: "imageTitle",
+            required: "true",
+            type: "string",
+            description: "Tên của hình ảnh",
+          },
+          {
+            in: "formData",
+            name: "altDes",
+            required: "true",
+            type: "string",
+            description: "Văn bản thay thế của hình ảnh",
+          },
+          {
+            in: "formData",
+            name: "parrentAlbums",
+            type: "string",
+            description: "Thư mục hình ảnh được chọn",
+          },
+          {
+            in: "formData",
+            name: "storage",
+            type: "string",
+            description: "Dung lượng của hình ảnh",
+          },
+          {
+            in: "formData",
+            name: "generatedTime",
+            type: "string",
+            description: "Thời gian khởi tạo của hình ảnh",
+          },
+        ],
+        responses: {
+          200: {
+            description: "status: 200 OK",
+            schema: {
+              properties: {
+                message: {
+                  type: "string",
+                  default: "Image uploading successfully",
+                },
+                error: { type: "string", default: "false" },
+                success: { type: "boolean", default: "true" },
+              },
+            },
+          },
+          401: {
+            description: "status: 401 Unauthorize token",
+            schema: {
+              properties: {
+                message: {
+                  type: "string",
+                  default: "Token is not correct or expired",
+                },
+                error: { type: "string" },
+                success: { type: "boolean", default: "false" },
+              },
+            },
+          },
+          500: {
+            description: "status: 500 Fileuploading failed",
+            schema: {
+              properties: {
+                message: { type: "string", default: "Image uploading failed" },
+                error: { type: "string" },
+                success: { type: "boolean", default: "false" },
+              },
+            },
+          },
+          501: {
+            description: "status: 500 Image information not correct",
+            schema: {
+              properties: {
+                message: {
+                  type: "string",
+                  default: "Image information is not correct",
+                },
+                error: { type: "string" },
+                success: { type: "boolean", default: "false" },
+              },
+            },
+          },
+        },
+        security: [],
+      },
+    },
+    "album/:id": {
+      get: {
+        tags: ["album"],
+        summary: "Lấy thông tin album bằng id của album",
+        description: "",
+        operationId: "getAlbumInfoByID",
+        consumes: ["multipart/form-data"],
+        produces: ["application/json"],
+        parameters: [
+          {
+            in: "formData",
+            name: "id",
+            required: "true",
+            schema: {
+              type: "string",
+            },
+            description: "id của hình ảnh",
+          },
+          {
+            in: "formData",
+            name: "token",
+            schema: {
+              type: "string",
+            },
+            description: "JWT của người dùng",
+          },
+        ],
+        responses: {
+          200: {
+            description: "status: 200 OK",
+            schema: {
+              properties: {
+                message: {
+                  type: "string",
+                  default: "Image information getting successfully",
+                },
+                error: { type: "string", default: "false" },
+                success: { type: "boolean", default: "true" },
+                imageInformation: {
+                  type: "object",
+                  properties: {
+                    id: { type: "string" },
+                    imageOwnKey: { type: "string" },
+                    imageSharedKey: { type: "string" },
+                    ownPeople: { type: "string" },
+                    imageTitle: { type: "string" },
+                    altDes: { type: "string" },
+                    sharedPeople: {
+                      type: "array",
+                      items: {
+                        type: "string",
+                      },
+                    },
+                    parentAlbumArray: {
+                      type: "array",
+                      items: {
+                        type: "object",
+                        properties: {
+                          id: { type: "string" },
+                          url: { type: "string" },
+                        },
+                      },
+                    },
+                    viewedPeople: { type: "array", items: { type: "string" } },
+                    imageURL: { type: "string" },
+                    storage: { type: "integer" },
+                    generatedAt: { type: "date" },
+                    isDelete: { type: "boolean" },
+                    createdAt: { type: "date" },
+                    updatedAt: { type: "date" },
+                  },
+                },
+              },
+            },
+          },
+
+          401: {
+            description: "status: 401 Unauthorize token",
+            schema: {
+              properties: {
+                message: {
+                  type: "string",
+                  default: "Token is not correct or expired",
+                },
+                error: { type: "string" },
+                success: { type: "boolean", default: "false" },
+              },
+            },
+          },
+          404: {
+            description: "status: 404 Not found",
+            schema: {
+              properties: {
+                message: {
+                  type: "string",
+                  default: "Image not found",
+                },
+                error: { type: "string" },
+                success: { type: "boolean", default: "false" },
+              },
+            },
+          },
+        },
+        security: [],
+      },
+    },
+    "album/get-user-own-image-key": {
+      get: {
+        tags: ["album"],
+        summary: "Lấy thông tin image key sở hữu từ người dùng",
+        description: "",
+        operationId: "getUserOwnImageKey",
+        consumes: ["multipart/form-data"],
+        produces: ["application/json"],
+        parameters: [
+          {
+            in: "formData",
+            name: "id",
+            required: "true",
+            schema: {
+              type: "string",
+            },
+            description: "id của hình ảnh",
+          },
+          {
+            in: "formData",
+            name: "username",
+            required: "true",
+            schema: {
+              type: "string",
+            },
+            description: "username của người dùng",
+          },
+          {
+            in: "formData",
+            name: "token",
+            schema: {
+              type: "string",
+            },
+            description: "JWT của người dùng",
+          },
+        ],
+        responses: {
+          200: {
+            description: "status: 200 OK",
+            schema: {
+              properties: {
+                message: {
+                  type: "string",
+                  default: "Image ownkey getting successfully",
+                },
+                error: { type: "string", default: "false" },
+                success: { type: "boolean", default: "true" },
+                imageOwnKey: { type: "string" },
+              },
+            },
+          },
+
+          401: {
+            description: "status: 401 Unauthorize token",
+            schema: {
+              properties: {
+                message: {
+                  type: "string",
+                  default: "Token is not correct or expired",
+                },
+                error: { type: "string" },
+                success: { type: "boolean", default: "false" },
+              },
+            },
+          },
+          404: {
+            description: "status: 404 Not found",
+            schema: {
+              properties: {
+                message: {
+                  type: "string",
+                  default: "Image ownkey not found",
+                },
+                error: { type: "string" },
+                success: { type: "boolean", default: "false" },
+              },
+            },
+          },
+        },
+        security: [],
+      },
+    },
+    "album/get-user-shared-image-key": {
+      get: {
+        tags: ["album"],
+        summary: "Lấy thông tin image key được chia sẻ từ người dùng",
+        description: "",
+        operationId: "getUserSharedImageKey",
+        consumes: ["multipart/form-data"],
+        produces: ["application/json"],
+        parameters: [
+          {
+            in: "formData",
+            name: "id",
+            required: "true",
+            schema: {
+              type: "string",
+            },
+            description: "id của hình ảnh",
+          },
+          {
+            in: "formData",
+            name: "username",
+            required: "true",
+            schema: {
+              type: "string",
+            },
+            description: "username của người dùng",
+          },
+          {
+            in: "formData",
+            name: "token",
+            schema: {
+              type: "string",
+            },
+            description: "JWT của người dùng",
+          },
+        ],
+        responses: {
+          200: {
+            description: "status: 200 OK",
+            schema: {
+              properties: {
+                message: {
+                  type: "string",
+                  default: "Image sharedkey getting successfully",
+                },
+                error: { type: "string", default: "false" },
+                success: { type: "boolean", default: "true" },
+                imageReceivedKey: { type: "string" },
+              },
+            },
+          },
+
+          401: {
+            description: "status: 401 Unauthorize token",
+            schema: {
+              properties: {
+                message: {
+                  type: "string",
+                  default: "Token is not correct or expired",
+                },
+                error: { type: "string" },
+                success: { type: "boolean", default: "false" },
+              },
+            },
+          },
+          404: {
+            description: "status: 404 Not found",
+            schema: {
+              properties: {
+                message: {
+                  type: "string",
+                  default: "Image sharedkey not found",
+                },
+                error: { type: "string" },
+                success: { type: "boolean", default: "false" },
+              },
+            },
+          },
+        },
+        security: [],
+      },
+    },
+    "album/add-user-to-viewed": {
+      patch: {
+        tags: ["album"],
+        summary: "Thêm người dùng vào danh sách đã xem hình ảnh",
+        description: "",
+        operationId: "addUserToViewedImage",
+        consumes: ["multipart/form-data"],
+        produces: ["application/json"],
+        parameters: [
+          {
+            in: "formData",
+            name: "id",
+            required: "true",
+            schema: {
+              type: "string",
+            },
+            description: "id của hình ảnh",
+          },
+          {
+            in: "formData",
+            name: "username",
+            required: "true",
+            schema: {
+              type: "string",
+            },
+            description: "username của người dùng",
+          },
+          {
+            in: "formData",
+            name: "token",
+            schema: {
+              type: "string",
+            },
+            description: "JWT của người dùng",
+          },
+        ],
+        responses: {
+          200: {
+            description: "status: 200 OK",
+            schema: {
+              properties: {
+                message: {
+                  type: "string",
+                  default: "Add user to viewed list OK",
+                },
+                error: { type: "string", default: "false" },
+                success: { type: "boolean", default: "true" },
+              },
+            },
+          },
+
+          401: {
+            description: "status: 401 Unauthorize token",
+            schema: {
+              properties: {
+                message: {
+                  type: "string",
+                  default: "Token is not correct or expired",
+                },
+                error: { type: "string" },
+                success: { type: "boolean", default: "false" },
+              },
+            },
+          },
+          404: {
+            description: "status: 404 Not found",
+            schema: {
+              properties: {
+                message: {
+                  type: "string",
+                  default: "Username or image not found",
+                },
+                error: { type: "string" },
+                success: { type: "boolean", default: "false" },
+              },
+            },
+          },
+          500: {
+            description: "status: 500 Not implemented",
+            schema: {
+              properties: {
+                message: {
+                  type: "string",
+                  default: "Can't add user to image view list",
+                },
+                error: { type: "string" },
+                success: { type: "boolean", default: "false" },
+              },
+            },
+          },
+        },
+        security: [],
+      },
+    },
+    "album/delete-own-image-temp": {
+      patch: {
+        tags: ["album"],
+        summary: "Xóa hình ảnh sở hữu (tạm thời)",
+        description: "",
+        operationId: "deleteOwnImageTemp",
+        consumes: ["multipart/form-data"],
+        produces: ["application/json"],
+        parameters: [
+          {
+            in: "formData",
+            name: "id",
+            required: "true",
+            schema: {
+              type: "string",
+            },
+            description: "id của hình ảnh",
+          },
+          {
+            in: "formData",
+            name: "username",
+            required: "true",
+            schema: {
+              type: "string",
+            },
+            description: "username của người dùng",
+          },
+          {
+            in: "formData",
+            name: "imageOwnKey",
+            required: "true",
+            schema: {
+              type: "string",
+            },
+            description: "Key sở hữu hình ảnh của người dùng",
+          },
+          {
+            in: "formData",
+            name: "token",
+            schema: {
+              type: "string",
+            },
+            description: "JWT của người dùng",
+          },
+        ],
+        responses: {
+          200: {
+            description: "status: 200 OK",
+            schema: {
+              properties: {
+                message: {
+                  type: "string",
+                  default: "Delete temporary image OK",
+                },
+                error: { type: "string", default: "false" },
+                success: { type: "boolean", default: "true" },
+              },
+            },
+          },
+
+          401: {
+            description: "status: 401 Unauthorize token",
+            schema: {
+              properties: {
+                message: {
+                  type: "string",
+                  default: "Token is not correct or expired",
+                },
+                error: { type: "string" },
+                success: { type: "boolean", default: "false" },
+              },
+            },
+          },
+          404: {
+            description: "status: 404 Not found",
+            schema: {
+              properties: {
+                message: {
+                  type: "string",
+                  default: "Username or image not found",
+                },
+                error: { type: "string" },
+                success: { type: "boolean", default: "false" },
+              },
+            },
+          },
+          500: {
+            description: "status: 500 Not implemented",
+            schema: {
+              properties: {
+                message: {
+                  type: "string",
+                  default: "Can't delete image",
+                },
+                error: { type: "string" },
+                success: { type: "boolean", default: "false" },
+              },
+            },
+          },
+        },
+        security: [],
+      },
+    },
+    "album/delete-own-image-perm": {
+      delete: {
+        tags: ["album"],
+        summary: "Xóa hình ảnh sở hữu (hoàn toàn)",
+        description: "",
+        operationId: "deleteOwnImagePerm",
+        consumes: ["multipart/form-data"],
+        produces: ["application/json"],
+        parameters: [
+          {
+            in: "formData",
+            name: "id",
+            required: "true",
+            schema: {
+              type: "string",
+            },
+            description: "id của hình ảnh",
+          },
+          {
+            in: "formData",
+            name: "username",
+            required: "true",
+            schema: {
+              type: "string",
+            },
+            description: "username của người dùng",
+          },
+          {
+            in: "formData",
+            name: "imageOwnKey",
+            required: "true",
+            schema: {
+              type: "string",
+            },
+            description: "Key sở hữu hình ảnh của người dùng",
+          },
+          {
+            in: "formData",
+            name: "token",
+            schema: {
+              type: "string",
+            },
+            description: "JWT của người dùng",
+          },
+        ],
+        responses: {
+          200: {
+            description: "status: 200 OK",
+            schema: {
+              properties: {
+                message: {
+                  type: "string",
+                  default: "Delete permantly image OK",
+                },
+                error: { type: "string", default: "false" },
+                success: { type: "boolean", default: "true" },
+              },
+            },
+          },
+
+          401: {
+            description: "status: 401 Unauthorize token",
+            schema: {
+              properties: {
+                message: {
+                  type: "string",
+                  default: "Token is not correct or expired",
+                },
+                error: { type: "string" },
+                success: { type: "boolean", default: "false" },
+              },
+            },
+          },
+          404: {
+            description: "status: 404 Not found",
+            schema: {
+              properties: {
+                message: {
+                  type: "string",
+                  default: "Username or image not found",
+                },
+                error: { type: "string" },
+                success: { type: "boolean", default: "false" },
+              },
+            },
+          },
+          500: {
+            description: "status: 500 Not implemented",
+            schema: {
+              properties: {
+                message: {
+                  type: "string",
+                  default: "Can't delete permantly image",
+                },
+                error: { type: "string" },
+                success: { type: "boolean", default: "false" },
+              },
+            },
+          },
+        },
+        security: [],
+      },
+    },
+    "album/delete-received-image-temp": {
+      patch: {
+        tags: ["album"],
+        summary: "Xóa hình ảnh được nhận (tạm thời)",
+        description: "",
+        operationId: "deleteReceivedImageTemp",
+        consumes: ["multipart/form-data"],
+        produces: ["application/json"],
+        parameters: [
+          {
+            in: "formData",
+            name: "id",
+            required: "true",
+            schema: {
+              type: "string",
+            },
+            description: "id của hình ảnh",
+          },
+          {
+            in: "formData",
+            name: "username",
+            required: "true",
+            schema: {
+              type: "string",
+            },
+            description: "username của người dùng",
+          },
+          {
+            in: "formData",
+            name: "imageOwnKey",
+            required: "true",
+            schema: {
+              type: "string",
+            },
+            description: "Key sở hữu hình ảnh của người dùng",
+          },
+          {
+            in: "formData",
+            name: "token",
+            schema: {
+              type: "string",
+            },
+            description: "JWT của người dùng",
+          },
+        ],
+        responses: {
+          200: {
+            description: "status: 200 OK",
+            schema: {
+              properties: {
+                message: {
+                  type: "string",
+                  default: "Delete temporary image OK",
+                },
+                error: { type: "string", default: "false" },
+                success: { type: "boolean", default: "true" },
+              },
+            },
+          },
+
+          401: {
+            description: "status: 401 Unauthorize token",
+            schema: {
+              properties: {
+                message: {
+                  type: "string",
+                  default: "Token is not correct or expired",
+                },
+                error: { type: "string" },
+                success: { type: "boolean", default: "false" },
+              },
+            },
+          },
+          404: {
+            description: "status: 404 Not found",
+            schema: {
+              properties: {
+                message: {
+                  type: "string",
+                  default: "Username or image not found",
+                },
+                error: { type: "string" },
+                success: { type: "boolean", default: "false" },
+              },
+            },
+          },
+          500: {
+            description: "status: 500 Not implemented",
+            schema: {
+              properties: {
+                message: {
+                  type: "string",
+                  default: "Can't delete image",
+                },
+                error: { type: "string" },
+                success: { type: "boolean", default: "false" },
+              },
+            },
+          },
+        },
+        security: [],
+      },
+    },
+    "album/delete-received-image-perm": {
+      delete: {
+        tags: ["album"],
+        summary: "Xóa hình ảnh được nhận (vĩnh viễn)",
+        description: "",
+        operationId: "deleteReceivedImagePerm",
+        consumes: ["multipart/form-data"],
+        produces: ["application/json"],
+        parameters: [
+          {
+            in: "formData",
+            name: "id",
+            required: "true",
+            schema: {
+              type: "string",
+            },
+            description: "id của hình ảnh",
+          },
+          {
+            in: "formData",
+            name: "username",
+            required: "true",
+            schema: {
+              type: "string",
+            },
+            description: "username của người dùng",
+          },
+          {
+            in: "formData",
+            name: "imageOwnKey",
+            required: "true",
+            schema: {
+              type: "string",
+            },
+            description: "Key sở hữu hình ảnh của người dùng",
+          },
+          {
+            in: "formData",
+            name: "token",
+            schema: {
+              type: "string",
+            },
+            description: "JWT của người dùng",
+          },
+        ],
+        responses: {
+          200: {
+            description: "status: 200 OK",
+            schema: {
+              properties: {
+                message: {
+                  type: "string",
+                  default: "Delete temporary image OK",
+                },
+                error: { type: "string", default: "false" },
+                success: { type: "boolean", default: "true" },
+              },
+            },
+          },
+
+          401: {
+            description: "status: 401 Unauthorize token",
+            schema: {
+              properties: {
+                message: {
+                  type: "string",
+                  default: "Token is not correct or expired",
+                },
+                error: { type: "string" },
+                success: { type: "boolean", default: "false" },
+              },
+            },
+          },
+          404: {
+            description: "status: 404 Not found",
+            schema: {
+              properties: {
+                message: {
+                  type: "string",
+                  default: "Username or image not found",
+                },
+                error: { type: "string" },
+                success: { type: "boolean", default: "false" },
+              },
+            },
+          },
+          500: {
+            description: "status: 500 Not implemented",
+            schema: {
+              properties: {
+                message: {
+                  type: "string",
+                  default: "Can't delete image",
+                },
+                error: { type: "string" },
+                success: { type: "boolean", default: "false" },
+              },
+            },
+          },
+        },
+        security: [],
+      },
+    },
+    "album/recover-own-image": {
+      patch: {
+        tags: ["album"],
+        summary: "Khôi phục hình ảnh của bản thân",
+        description: "",
+        operationId: "recoverOwnImage",
+        consumes: ["multipart/form-data"],
+        produces: ["application/json"],
+        parameters: [
+          {
+            in: "formData",
+            name: "id",
+            required: "true",
+            schema: {
+              type: "string",
+            },
+            description: "id của hình ảnh",
+          },
+          {
+            in: "formData",
+            name: "username",
+            required: "true",
+            schema: {
+              type: "string",
+            },
+            description: "username của người dùng",
+          },
+          {
+            in: "formData",
+            name: "imageOwnKey",
+            required: "true",
+            schema: {
+              type: "string",
+            },
+            description: "Key sở hữu hình ảnh của người dùng",
+          },
+          {
+            in: "formData",
+            name: "token",
+            schema: {
+              type: "string",
+            },
+            description: "JWT của người dùng",
+          },
+        ],
+        responses: {
+          200: {
+            description: "status: 200 OK",
+            schema: {
+              properties: {
+                message: {
+                  type: "string",
+                  default: "Delete temporary image OK",
+                },
+                error: { type: "string", default: "false" },
+                success: { type: "boolean", default: "true" },
+              },
+            },
+          },
+
+          401: {
+            description: "status: 401 Unauthorize token",
+            schema: {
+              properties: {
+                message: {
+                  type: "string",
+                  default: "Token is not correct or expired",
+                },
+                error: { type: "string" },
+                success: { type: "boolean", default: "false" },
+              },
+            },
+          },
+          404: {
+            description: "status: 404 Not found",
+            schema: {
+              properties: {
+                message: {
+                  type: "string",
+                  default: "Username or image not found",
+                },
+                error: { type: "string" },
+                success: { type: "boolean", default: "false" },
+              },
+            },
+          },
+          500: {
+            description: "status: 500 Not implemented",
+            schema: {
+              properties: {
+                message: {
+                  type: "string",
+                  default: "Can't delete image",
+                },
+                error: { type: "string" },
+                success: { type: "boolean", default: "false" },
+              },
+            },
+          },
+        },
+        security: [],
+      },
+    },
+    "album/recover-received-image": {
+      patch: {
+        tags: ["album"],
+        summary: "Khôi phục hình ảnh được chia sẻ",
+        description: "",
+        operationId: "recoverReceivedImage",
+        consumes: ["multipart/form-data"],
+        produces: ["application/json"],
+        parameters: [
+          {
+            in: "formData",
+            name: "id",
+            required: "true",
+            schema: {
+              type: "string",
+            },
+            description: "id của hình ảnh",
+          },
+          {
+            in: "formData",
+            name: "username",
+            required: "true",
+            schema: {
+              type: "string",
+            },
+            description: "username của người dùng",
+          },
+          {
+            in: "formData",
+            name: "imageOwnKey",
+            required: "true",
+            schema: {
+              type: "string",
+            },
+            description: "Key sở hữu hình ảnh của người dùng",
+          },
+          {
+            in: "formData",
+            name: "token",
+            schema: {
+              type: "string",
+            },
+            description: "JWT của người dùng",
+          },
+        ],
+        responses: {
+          200: {
+            description: "status: 200 OK",
+            schema: {
+              properties: {
+                message: {
+                  type: "string",
+                  default: "Delete temporary image OK",
+                },
+                error: { type: "string", default: "false" },
+                success: { type: "boolean", default: "true" },
+              },
+            },
+          },
+
+          401: {
+            description: "status: 401 Unauthorize token",
+            schema: {
+              properties: {
+                message: {
+                  type: "string",
+                  default: "Token is not correct or expired",
+                },
+                error: { type: "string" },
+                success: { type: "boolean", default: "false" },
+              },
+            },
+          },
+          404: {
+            description: "status: 404 Not found",
+            schema: {
+              properties: {
+                message: {
+                  type: "string",
+                  default: "Username or image not found",
+                },
+                error: { type: "string" },
+                success: { type: "boolean", default: "false" },
+              },
+            },
+          },
+          500: {
+            description: "status: 500 Not implemented",
+            schema: {
+              properties: {
+                message: {
+                  type: "string",
+                  default: "Can't delete image",
+                },
+                error: { type: "string" },
+                success: { type: "boolean", default: "false" },
+              },
+            },
+          },
+        },
+        security: [],
+      },
+    },
+    "album/change-title": {
+      patch: {
+        tags: ["album"],
+        summary: "Thay đổi tên của hình ảnh",
+        description: "",
+        operationId: "changeImageTitle",
+        consumes: ["multipart/form-data"],
+        produces: ["application/json"],
+        parameters: [
+          {
+            in: "formData",
+            name: "id",
+            required: "true",
+            schema: {
+              type: "string",
+            },
+            description: "id của hình ảnh",
+          },
+          {
+            in: "formData",
+            name: "username",
+            required: "true",
+            schema: {
+              type: "string",
+            },
+            description: "username của người dùng",
+          },
+          {
+            in: "formData",
+            name: "imageOwnKey",
+            required: "true",
+            schema: {
+              type: "string",
+            },
+            description: "Key sở hữu hình ảnh của người dùng",
+          },
+          {
+            in: "formData",
+            name: "token",
+            schema: {
+              type: "string",
+            },
+            description: "JWT của người dùng",
+          },
+        ],
+        responses: {
+          200: {
+            description: "status: 200 OK",
+            schema: {
+              properties: {
+                message: {
+                  type: "string",
+                  default: "Delete temporary image OK",
+                },
+                error: { type: "string", default: "false" },
+                success: { type: "boolean", default: "true" },
+              },
+            },
+          },
+
+          401: {
+            description: "status: 401 Unauthorize token",
+            schema: {
+              properties: {
+                message: {
+                  type: "string",
+                  default: "Token is not correct or expired",
+                },
+                error: { type: "string" },
+                success: { type: "boolean", default: "false" },
+              },
+            },
+          },
+          404: {
+            description: "status: 404 Not found",
+            schema: {
+              properties: {
+                message: {
+                  type: "string",
+                  default: "Username or image not found",
+                },
+                error: { type: "string" },
+                success: { type: "boolean", default: "false" },
+              },
+            },
+          },
+          500: {
+            description: "status: 500 Not implemented",
+            schema: {
+              properties: {
+                message: {
+                  type: "string",
+                  default: "Can't delete image",
+                },
+                error: { type: "string" },
+                success: { type: "boolean", default: "false" },
+              },
+            },
+          },
+        },
+        security: [],
+      },
+    },
+    "album/change-description": {
+      patch: {
+        tags: ["album"],
+        summary: "Thay đổi mô tả của hình ảnh",
+        description: "",
+        operationId: "changeImageDescription",
+        consumes: ["multipart/form-data"],
+        produces: ["application/json"],
+        parameters: [
+          {
+            in: "formData",
+            name: "id",
+            required: "true",
+            schema: {
+              type: "string",
+            },
+            description: "id của hình ảnh",
+          },
+          {
+            in: "formData",
+            name: "username",
+            required: "true",
+            schema: {
+              type: "string",
+            },
+            description: "username của người dùng",
+          },
+          {
+            in: "formData",
+            name: "imageOwnKey",
+            required: "true",
+            schema: {
+              type: "string",
+            },
+            description: "Key sở hữu hình ảnh của người dùng",
+          },
+          {
+            in: "formData",
+            name: "token",
+            schema: {
+              type: "string",
+            },
+            description: "JWT của người dùng",
+          },
+        ],
+        responses: {
+          200: {
+            description: "status: 200 OK",
+            schema: {
+              properties: {
+                message: {
+                  type: "string",
+                  default: "Delete temporary image OK",
+                },
+                error: { type: "string", default: "false" },
+                success: { type: "boolean", default: "true" },
+              },
+            },
+          },
+
+          401: {
+            description: "status: 401 Unauthorize token",
+            schema: {
+              properties: {
+                message: {
+                  type: "string",
+                  default: "Token is not correct or expired",
+                },
+                error: { type: "string" },
+                success: { type: "boolean", default: "false" },
+              },
+            },
+          },
+          404: {
+            description: "status: 404 Not found",
+            schema: {
+              properties: {
+                message: {
+                  type: "string",
+                  default: "Username or image not found",
+                },
+                error: { type: "string" },
+                success: { type: "boolean", default: "false" },
+              },
+            },
+          },
+          500: {
+            description: "status: 500 Not implemented",
+            schema: {
+              properties: {
+                message: {
+                  type: "string",
+                  default: "Can't delete image",
+                },
+                error: { type: "string" },
+                success: { type: "boolean", default: "false" },
+              },
+            },
+          },
+        },
+        security: [],
+      },
+    },
+    "album/add-user-access": {
+      patch: {
+        tags: ["album"],
+        summary: "Thêm quyền truy cập của hình ảnh",
+        description: "",
+        operationId: "addUserAccess",
+        consumes: ["multipart/form-data"],
+        produces: ["application/json"],
+        parameters: [
+          {
+            in: "formData",
+            name: "id",
+            required: "true",
+            schema: {
+              type: "string",
+            },
+            description: "id của hình ảnh",
+          },
+          {
+            in: "formData",
+            name: "username",
+            required: "true",
+            schema: {
+              type: "string",
+            },
+            description: "username của người dùng",
+          },
+          {
+            in: "formData",
+            name: "imageOwnKey",
+            required: "true",
+            schema: {
+              type: "string",
+            },
+            description: "Key sở hữu hình ảnh của người dùng",
+          },
+          {
+            in: "formData",
+            name: "token",
+            schema: {
+              type: "string",
+            },
+            description: "JWT của người dùng",
+          },
+        ],
+        responses: {
+          200: {
+            description: "status: 200 OK",
+            schema: {
+              properties: {
+                message: {
+                  type: "string",
+                  default: "Delete temporary image OK",
+                },
+                error: { type: "string", default: "false" },
+                success: { type: "boolean", default: "true" },
+              },
+            },
+          },
+
+          401: {
+            description: "status: 401 Unauthorize token",
+            schema: {
+              properties: {
+                message: {
+                  type: "string",
+                  default: "Token is not correct or expired",
+                },
+                error: { type: "string" },
+                success: { type: "boolean", default: "false" },
+              },
+            },
+          },
+          404: {
+            description: "status: 404 Not found",
+            schema: {
+              properties: {
+                message: {
+                  type: "string",
+                  default: "Username or image not found",
+                },
+                error: { type: "string" },
+                success: { type: "boolean", default: "false" },
+              },
+            },
+          },
+          500: {
+            description: "status: 500 Not implemented",
+            schema: {
+              properties: {
+                message: {
+                  type: "string",
+                  default: "Can't delete image",
+                },
+                error: { type: "string" },
+                success: { type: "boolean", default: "false" },
+              },
+            },
+          },
+        },
+        security: [],
+      },
+    },
+    "album/remove-user-access": {
+      patch: {
+        tags: ["album"],
+        summary: "Xóa quyền truy cập của hình ảnh",
+        description: "",
+        operationId: "removeUserAccess",
+        consumes: ["multipart/form-data"],
+        produces: ["application/json"],
+        parameters: [
+          {
+            in: "formData",
+            name: "id",
+            required: "true",
+            schema: {
+              type: "string",
+            },
+            description: "id của hình ảnh",
+          },
+          {
+            in: "formData",
+            name: "username",
+            required: "true",
+            schema: {
+              type: "string",
+            },
+            description: "username của người dùng",
+          },
+          {
+            in: "formData",
+            name: "imageOwnKey",
+            required: "true",
+            schema: {
+              type: "string",
+            },
+            description: "Key sở hữu hình ảnh của người dùng",
+          },
+          {
+            in: "formData",
+            name: "token",
+            schema: {
+              type: "string",
+            },
+            description: "JWT của người dùng",
+          },
+        ],
+        responses: {
+          200: {
+            description: "status: 200 OK",
+            schema: {
+              properties: {
+                message: {
+                  type: "string",
+                  default: "Delete temporary image OK",
+                },
+                error: { type: "string", default: "false" },
+                success: { type: "boolean", default: "true" },
+              },
+            },
+          },
+
+          401: {
+            description: "status: 401 Unauthorize token",
+            schema: {
+              properties: {
+                message: {
+                  type: "string",
+                  default: "Token is not correct or expired",
+                },
+                error: { type: "string" },
+                success: { type: "boolean", default: "false" },
+              },
+            },
+          },
+          404: {
+            description: "status: 404 Not found",
+            schema: {
+              properties: {
+                message: {
+                  type: "string",
+                  default: "Username or image not found",
+                },
+                error: { type: "string" },
+                success: { type: "boolean", default: "false" },
+              },
+            },
+          },
+          500: {
+            description: "status: 500 Not implemented",
+            schema: {
+              properties: {
+                message: {
+                  type: "string",
+                  default: "Can't delete image",
+                },
+                error: { type: "string" },
+                success: { type: "boolean", default: "false" },
+              },
+            },
+          },
+        },
+        security: [],
+      },
+    },
+    "search/search-by-name": {
+      patch: {
+        tags: ["search"],
+        summary: "Thêm quyền truy cập của hình ảnh",
+        description: "",
+        operationId: "addUserAccess",
+        consumes: ["multipart/form-data"],
+        produces: ["application/json"],
+        parameters: [
+          {
+            in: "formData",
+            name: "id",
+            required: "true",
+            schema: {
+              type: "string",
+            },
+            description: "id của hình ảnh",
+          },
+          {
+            in: "formData",
+            name: "username",
+            required: "true",
+            schema: {
+              type: "string",
+            },
+            description: "username của người dùng",
+          },
+          {
+            in: "formData",
+            name: "imageOwnKey",
+            required: "true",
+            schema: {
+              type: "string",
+            },
+            description: "Key sở hữu hình ảnh của người dùng",
+          },
+          {
+            in: "formData",
+            name: "token",
+            schema: {
+              type: "string",
+            },
+            description: "JWT của người dùng",
+          },
+        ],
+        responses: {
+          200: {
+            description: "status: 200 OK",
+            schema: {
+              properties: {
+                message: {
+                  type: "string",
+                  default: "Delete temporary image OK",
+                },
+                error: { type: "string", default: "false" },
+                success: { type: "boolean", default: "true" },
+              },
+            },
+          },
+
+          401: {
+            description: "status: 401 Unauthorize token",
+            schema: {
+              properties: {
+                message: {
+                  type: "string",
+                  default: "Token is not correct or expired",
+                },
+                error: { type: "string" },
+                success: { type: "boolean", default: "false" },
+              },
+            },
+          },
+          404: {
+            description: "status: 404 Not found",
+            schema: {
+              properties: {
+                message: {
+                  type: "string",
+                  default: "Username or image not found",
+                },
+                error: { type: "string" },
+                success: { type: "boolean", default: "false" },
+              },
+            },
+          },
+          500: {
+            description: "status: 500 Not implemented",
+            schema: {
+              properties: {
+                message: {
+                  type: "string",
+                  default: "Can't delete image",
+                },
+                error: { type: "string" },
+                success: { type: "boolean", default: "false" },
+              },
+            },
+          },
+        },
+        security: [],
+      },
+    },
+    "search/search-by-date": {
+      patch: {
+        tags: ["search"],
+        summary: "Xóa quyền truy cập của hình ảnh",
+        description: "",
+        operationId: "removeUserAccess",
+        consumes: ["multipart/form-data"],
+        produces: ["application/json"],
+        parameters: [
+          {
+            in: "formData",
+            name: "id",
+            required: "true",
+            schema: {
+              type: "string",
+            },
+            description: "id của hình ảnh",
+          },
+          {
+            in: "formData",
+            name: "username",
+            required: "true",
+            schema: {
+              type: "string",
+            },
+            description: "username của người dùng",
+          },
+          {
+            in: "formData",
+            name: "imageOwnKey",
+            required: "true",
+            schema: {
+              type: "string",
+            },
+            description: "Key sở hữu hình ảnh của người dùng",
+          },
+          {
+            in: "formData",
+            name: "token",
+            schema: {
+              type: "string",
+            },
+            description: "JWT của người dùng",
+          },
+        ],
+        responses: {
+          200: {
+            description: "status: 200 OK",
+            schema: {
+              properties: {
+                message: {
+                  type: "string",
+                  default: "Delete temporary image OK",
+                },
+                error: { type: "string", default: "false" },
+                success: { type: "boolean", default: "true" },
+              },
+            },
+          },
+
+          401: {
+            description: "status: 401 Unauthorize token",
+            schema: {
+              properties: {
+                message: {
+                  type: "string",
+                  default: "Token is not correct or expired",
+                },
+                error: { type: "string" },
+                success: { type: "boolean", default: "false" },
+              },
+            },
+          },
+          404: {
+            description: "status: 404 Not found",
+            schema: {
+              properties: {
+                message: {
+                  type: "string",
+                  default: "Username or image not found",
+                },
+                error: { type: "string" },
+                success: { type: "boolean", default: "false" },
+              },
+            },
+          },
+          500: {
+            description: "status: 500 Not implemented",
+            schema: {
+              properties: {
+                message: {
+                  type: "string",
+                  default: "Can't delete image",
+                },
+                error: { type: "string" },
+                success: { type: "boolean", default: "false" },
+              },
+            },
+          },
+        },
+        security: [],
+      },
+    },
   },
   securityDefinitions: {
     // Thông tin về api key sử dụng để thực hiện request
@@ -1752,6 +4302,7 @@ var spec = {
             properties: {
               imageID: { type: "integer" },
               imageOwnKey: { type: "string" },
+              isDelete: { type: "boolean" },
             },
           },
         },
@@ -1762,6 +4313,7 @@ var spec = {
             properties: {
               imageID: { type: "integer" },
               imageOwnKey: { type: "string" },
+              isDelete: { type: "boolean" },
             },
           },
         },
